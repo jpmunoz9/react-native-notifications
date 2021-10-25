@@ -64,8 +64,15 @@ public class PushNotification implements IPushNotification {
     @Override
     public void onReceived() throws InvalidNotificationException {
         if (!mAppLifecycleFacade.isAppVisible()) {
-            postNotification(null);
-            notifyReceivedBackgroundToJS();
+            if (!mAppLifecycleFacade.isReactInitialized() && InitialNotificationHolder.getInstance().get() == null) {
+                mJsIOHelper.startReactContext(mContext, mAppLifecycleFacade.getRunningReactContext());
+                setAsInitialNotification();
+            } else if (!mAppLifecycleFacade.isReactInitialized() && InitialNotificationHolder.getInstance().get() != null) {
+                queueNotification();
+            } else {
+                postNotification(null);
+                notifyReceivedBackgroundToJS();
+            }
         } else {
             notifyReceivedToJS();
         }
@@ -87,6 +94,9 @@ public class PushNotification implements IPushNotification {
     }
 
     protected int postNotification(Integer notificationId) {
+        if (mNotificationProps.getTitle() == null && mNotificationProps.getBody() == null) {
+            return -1;
+        }
         final PendingIntent pendingIntent = getCTAPendingIntent();
         final Notification notification = buildNotification(pendingIntent);
         return postNotification(notification, notificationId);
@@ -119,6 +129,10 @@ public class PushNotification implements IPushNotification {
 
     protected void setAsInitialNotification() {
         InitialNotificationHolder.getInstance().set(mNotificationProps);
+    }
+
+    protected void queueNotification() {
+        InitialNotificationHolder.getInstance().addPendingNotification(mNotificationProps);
     }
 
     protected void dispatchImmediately() {

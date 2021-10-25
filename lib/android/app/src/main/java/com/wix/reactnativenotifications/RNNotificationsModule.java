@@ -1,5 +1,7 @@
 package com.wix.reactnativenotifications;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
@@ -92,6 +94,23 @@ public class RNNotificationsModule extends ReactContextBaseJavaModule implements
             result = Arguments.fromBundle(notification.asBundle());
         } finally {
             promise.resolve(result);
+            postPendingNotifications();
+        }
+    }
+
+    public void postPendingNotifications() {
+        try {
+            List<PushNotificationProps> pendingNotifications = InitialNotificationHolder.getInstance().getPendingNotifications();
+            pendingNotifications.forEach((notificationProps) -> {
+                Bundle propsBundle = notificationProps.asBundle();
+                IPushNotification pushNotification = PushNotification.get(getReactApplicationContext().getApplicationContext(), propsBundle);
+                try {
+                    pushNotification.onReceived();
+                } catch (IPushNotification.InvalidNotificationException e) {}
+            });
+        } catch (Exception e) {
+        }finally {
+            InitialNotificationHolder.getInstance().removePendingNotifications();
         }
     }
 
