@@ -44,7 +44,7 @@
 }
 
 - (void)registerPushKit {
-    [RNNotifications startMonitorPushKitNotifications];
+    [RNNotifications startMonitorPushKitNotifications:nil];
 }
 
 - (void)getBadgeCount:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
