@@ -37,8 +37,8 @@
     [[self sharedInstance] startMonitorNotifications];
 }
 
-+ (void)startMonitorPushKitNotifications {
-    [[self sharedInstance] startMonitorPushKitNotifications];
++ (void)startMonitorPushKitNotifications:(id<PKPushRegistryDelegate>)softphone {
+    [[self sharedInstance] startMonitorPushKitNotifications:softphone];
 }
 
 + (void)didReceiveBackgroundNotification:(NSDictionary *)userInfo withCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
@@ -74,9 +74,9 @@
     [_notificationCenterMulticast addNativeDelegate:_notificationCenterListener];
 }
 
-- (void)startMonitorPushKitNotifications {
+- (void)startMonitorPushKitNotifications:(id<PKPushRegistryDelegate>)softphone {
     _pushKitEventHandler = [[RNPushKitEventHandler alloc] initWithStore:_store];
-    _pushKit = [[RNPushKit alloc] initWithEventHandler:_pushKitEventHandler];
+    _pushKit = [[RNPushKit alloc] initWithEventHandler:_pushKitEventHandler andSoftphone:softphone];
 }
 
 - (void)didReceiveBackgroundNotification:(NSDictionary *)userInfo withCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {

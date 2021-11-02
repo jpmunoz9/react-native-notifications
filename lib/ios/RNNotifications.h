@@ -8,7 +8,7 @@
 + (instancetype)sharedInstance;
 
 + (void)startMonitorNotifications;
-+ (void)startMonitorPushKitNotifications;
++ (void)startMonitorPushKitNotifications:(id<PKPushRegistryDelegate>)softphone;
 
 + (void)didReceiveBackgroundNotification:(NSDictionary *)userInfo withCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
 

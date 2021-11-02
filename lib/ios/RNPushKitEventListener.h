@@ -4,6 +4,6 @@
 
 @interface RNPushKitEventListener : NSObject <PKPushRegistryDelegate>
 
-- (instancetype)initWithPushKitEventHandler:(RNPushKitEventHandler *)pushKitEventHandler;
+- (instancetype)initWithPushKitEventHandler:(RNPushKitEventHandler *)pushKitEventHandler andSoftphone:(id<PKPushRegistryDelegate>)softphone;
 
 @end
